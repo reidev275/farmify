@@ -25,3 +25,8 @@ export const validationMonoid = {
     return failure(errors);
   }
 };
+
+export const combine = <E>(...as: Validation<E>[]): Validation<E> => {
+  const M = validationMonoid;
+  return as.reduce(M.append, M.empty);
+};
