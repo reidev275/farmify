@@ -1,0 +1,27 @@
+{
+  "name": "farmify",
+  "version": "1.0.0",
+  "description": "Validation via Monoidal, Contravariant functions",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublishOnly": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reidev275/farmify"
+  },
+  "keywords": [
+    "validation",
+    "contravariant",
+    "monoid"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}
