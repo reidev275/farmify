@@ -1,11 +1,11 @@
 // a type to contain information about validation results
-export type Validation =
+export type Validation<E> =
   | { kind: "Success" }
-  | { kind: "Failure"; errors: string[] };
+  | { kind: "Failure"; errors: E[] };
 
 // helper functions to create Validation objects
-export const success: Validation = { kind: "Success" };
-export const failure = (errors: string[]): Validation => ({
+export const success = <E>(): Validation<E> => ({ kind: "Success" });
+export const failure = <E>(errors: E[]): Validation<E> => ({
   kind: "Failure",
   errors: errors
 });

@@ -1,12 +1,12 @@
 import { Validation, validationMonoid, success, failure } from "./validation";
 import { PredValidation, contramap } from "./predValidation";
 
-export type AsyncPredValidation<A> = (a: A) => Promise<Validation>;
+export type AsyncPredValidation<A, E> = (a: A) => Promise<Validation<E>>;
 
 // A way to turn a PredValidation into an AsyncPredValidation
-export const lift = <A>(v: PredValidation<A>): AsyncPredValidation<A> => (
-  a: A
-) => Promise.resolve(v(a));
+export const lift = <A, E>(
+  v: PredValidation<A, E>
+): AsyncPredValidation<A, E> => (a: A) => Promise.resolve(v(a));
 
 export const asyncPredValidationMonoid = <A>() => ({
   empty: () => Promise.resolve(validationMonoid.empty),
@@ -16,9 +16,9 @@ export const asyncPredValidationMonoid = <A>() => ({
     )
 });
 
-export const combine = <A>(
-  ...as: AsyncPredValidation<A>[]
-): AsyncPredValidation<A> => {
+export const combine = <A, E>(
+  ...as: AsyncPredValidation<A, E>[]
+): AsyncPredValidation<A, E> => {
   const M = asyncPredValidationMonoid<A>();
   return as.reduce(M.append, M.empty);
 };

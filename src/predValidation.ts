@@ -1,6 +1,6 @@
 import { Validation, validationMonoid, success, failure } from "./validation";
 
-export type PredValidation<A> = (a: A) => Validation;
+export type PredValidation<A, E> = (a: A) => Validation<E>;
 
 // proof we can combine 0-many PredValidation<A> types in such
 // a way that all validations must pass
@@ -16,7 +16,9 @@ export const contramap = <A, B, C>(
 ): ((b: B) => C) => (b: B) => v(f(b));
 
 // a way to combining multiple validation rules into a single validation rule
-export const combine = <A>(...as: PredValidation<A>[]): PredValidation<A> => {
+export const combine = <A, E>(
+  ...as: PredValidation<A, E>[]
+): PredValidation<A, E> => {
   const M = predValidationMonoid<A>();
   return as.reduce(M.append, M.empty);
 };
