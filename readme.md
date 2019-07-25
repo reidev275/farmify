@@ -57,7 +57,7 @@ validatePerson({
 
 ### Working with asynchronous validation
 
-```
+```typescript
 import * as A from "farmify/dist/asyncValidation"
 
 // an asynchronous validation
