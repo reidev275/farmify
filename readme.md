@@ -54,6 +54,29 @@ validatePerson({
 // { kind: "Failure", errors: [ "value required", "not positive" ] }
 ```
 
+### Using a custom error type
+Farmify is polymorphic in its error type which means you can use whatever you want.
+
+```typescript
+type FormError = {
+  val: any;
+  prop: string;
+  error: string;
+};
+
+const maxLength = (maxLength: number, prop: string) => (
+  n: number
+): Validation<FormError> =>
+  n <= maxLength
+    ? success()
+    : failure([
+        {
+          val: n,
+          prop: prop,
+          error: "value too long"
+        }
+      ]);
+```
 
 ### Working with asynchronous validation
 
@@ -61,18 +84,18 @@ validatePerson({
 import * as A from "farmify/dist/asyncValidation"
 
 // an asynchronous validation
-const isUnique = async (username: string): Promise<Validation<{ value: any, error: string }>> => {
+const isUnique = async (username: string): Promise<Validation<string>> => {
   const matchedUser = await getUser(username);
   return matchedUser 
-    ? failure([ { value: username, error: "Username already taken" } ]) 
+    ? failure([ "Username already taken" ]) 
     : success()
 }
 
 // a non asynchronous validation
-const maxLength = (maxLength: number) => (s: string): Validation<{ value: any, error: string }>> => 
+const maxLength = (maxLength: number) => (s: string): Validation<string>> => 
   s.length <= maxLength 
     ? success()
-    : failure([ { value: s, error: `Cannot be longer than ${maxLength}` } ])
+    : failure([ `Cannot be longer than ${maxLength}`  ])
 
 const validUserName = A.combine(
   A.lift(maxLength(8)), // lifting maxLength into an asynchronous validation
@@ -83,5 +106,5 @@ validUserName('bob').then(console.log)
 //{ kind: "Success" }
 
 validUserName('thisIsTooLong').then(console.log)
-//{ kind: "Failure", errors: [ { value: 'thisIsTooLong', error: 'Cannot be longer than 8' } ] }
+//{ kind: "Failure", errors: [ 'Cannot be longer than 8' ] }
 ```

@@ -10,8 +10,21 @@ export const failure = <E>(errors: E[]): Validation<E> => ({
   errors: errors
 });
 
+export const cata = <E, A>(
+  v: Validation<E>,
+  onSuccess: () => A,
+  onFailure: (errors: E[]) => A
+): A => {
+  switch (v.kind) {
+    case "Success":
+      return onSuccess();
+    case "Failure":
+      return onFailure(v.errors);
+  }
+};
+
 export const validationMonoid = {
-  empty: success,
+  empty: success(),
   append: (x, y) => {
     if (x.kind === "Success" && y.kind === "Success") return x;
 
@@ -30,3 +43,4 @@ export const combine = <E>(...as: Validation<E>[]): Validation<E> => {
   const M = validationMonoid;
   return as.reduce(M.append, M.empty);
 };
+
