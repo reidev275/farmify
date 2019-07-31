@@ -8,13 +8,14 @@ export const lift = <A, E>(
   v: PredValidation<A, E>
 ): AsyncPredValidation<A, E> => (a: A) => Promise.resolve(v(a));
 
-export const asyncPredValidationMonoid = <A>() => ({
-  empty: () => Promise.resolve(validationMonoid.empty),
-  append: (x, y) => (a: A) =>
-    Promise.all([x(a), y(a)]).then(([v1, v2]) =>
-      validationMonoid.append(v1, v2)
-    )
-});
+export const asyncPredValidationMonoid = <A>() => {
+  const M = validationMonoid<A>();
+  return {
+    empty: () => Promise.resolve(M.empty),
+    append: (x, y) => (a: A) =>
+      Promise.all([x(a), y(a)]).then(([v1, v2]) => M.append(v1, v2))
+  };
+};
 
 export const combine = <A, E>(
   ...as: AsyncPredValidation<A, E>[]

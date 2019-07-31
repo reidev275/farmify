@@ -23,8 +23,13 @@ export const cata = <E, A>(
   }
 };
 
-export const validationMonoid = {
-  empty: success(),
+export interface Monoid<A> {
+  empty: A;
+  append(x: A, y: A): A;
+}
+
+export const validationMonoid = <E>(): Monoid<Validation<E>> => ({
+  empty: success<E>(),
   append: (x, y) => {
     if (x.kind === "Success" && y.kind === "Success") return x;
 
@@ -37,10 +42,9 @@ export const validationMonoid = {
     }
     return failure(errors);
   }
-};
+});
 
 export const combine = <E>(...as: Validation<E>[]): Validation<E> => {
-  const M = validationMonoid;
+  const M = validationMonoid<E>();
   return as.reduce(M.append, M.empty);
 };
-

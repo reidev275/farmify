@@ -1,10 +1,14 @@
 import * as V from "../src/validation";
+import * as PV from "../src/predValidation";
 import { expect } from "chai";
 import "mocha";
 import * as fc from "fast-check";
 import { Person, isPositive, firstIsDefined } from "./helpers";
 
-const validate = (p: Person) => V.combine(isPositive(p.age), firstIsDefined(p));
+const validate = PV.combine(
+  PV.contramap((p: Person) => p.age, isPositive),
+  firstIsDefined
+);
 
 describe("Validation Combination", () => {
   it("is Successful when it should be", () => {
