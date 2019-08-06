@@ -1,4 +1,4 @@
-import * as V from "../src/validation";
+import { Validation as V } from "../src/index";
 import { expect } from "chai";
 import "mocha";
 import * as fc from "fast-check";

@@ -1,6 +1,6 @@
 {
   "name": "farmify",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "Validation via Monoidal, Contravariant functions",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "dist"
   ],
   "scripts": {
-    "prepublishOnly": "npm test && tsc",
+    "prepublishOnly": "npm run build",
+    "build": "tsc && npm test",
     "test": "mocha -r ts-node/register test/**.ts"
   },
   "repository": {
