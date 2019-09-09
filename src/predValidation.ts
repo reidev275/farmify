@@ -3,7 +3,9 @@ import {
   Validation,
   validationMonoid,
   success,
-  failure
+  failure,
+  map,
+  combine as vcombine
 } from "./validation";
 
 export type PredValidation<A, E> = (a: A) => Validation<E>;
@@ -27,4 +29,16 @@ export const combine = <A, E>(
 ): PredValidation<A, E> => {
   const M = predValidationMonoid<A, E>();
   return as.reduce(M.append, M.empty);
+};
+
+// a way to make a validation work for an array of objects
+export const all = <A, E>(
+  validate: PredValidation<A, E>,
+  f: (e: E, i: number) => E
+): PredValidation<A[], E> => (as: A[]) => {
+  const vs = as.map((a, i) => {
+    const validation = validate(a);
+    return map(v => f(v, i), validation);
+  });
+  return vcombine(...vs);
 };

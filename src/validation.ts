@@ -23,6 +23,9 @@ export const cata = <E, A>(
   }
 };
 
+export const map = <E, F>(f: (e: E) => F, v: Validation<E>): Validation<F> =>
+  cata(v, () => success<F>(), errors => failure(errors.map(f)));
+
 export interface Monoid<A> {
   empty: A;
   append(x: A, y: A): A;

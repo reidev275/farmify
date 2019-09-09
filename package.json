@@ -1,6 +1,6 @@
 {
   "name": "farmify",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "description": "Validation via Monoidal, Contravariant functions",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
