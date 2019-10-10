@@ -4,7 +4,6 @@ import { expect } from "chai";
 import "mocha";
 import * as fc from "fast-check";
 import { Person, isPositive, lessThan, firstIsDefined } from "./helpers";
-import { assert } from "chai";
 
 const validate: PV.PredValidation<Person, string> = PV.combine(
   PV.contramap((p: Person) => p.age, isPositive),
@@ -46,25 +45,5 @@ describe("Contramap to combine", () => {
         age => ageValidation({ first: "", age: age }).kind == "Success"
       )
     );
-  });
-});
-
-const positive = (property: string) => (
-  n: number
-): V.Validation<{ property: string; error: string }> =>
-  n > 0
-    ? V.success()
-    : V.failure([{ property: property, error: "age was negative" }]);
-
-type Foo = { foo: number };
-const values = [{ foo: 1 }, { foo: 2 }, { foo: -1 }];
-
-describe("all", () => {
-  it("allows indexing the error type", () => {
-    const validate = PV.all(
-      PV.contramap((x: Foo) => x.foo, positive("foo")),
-      (e, i) => ({ ...e, index: i })
-    );
-    assert.equal(V.cata(validate(values), () => [], es => es)[0].index, 2);
   });
 });
