@@ -13,14 +13,14 @@ Farmify has no constraints on your failure type, so you can easily use simple st
 as shown in this example, or provide your own error type.
 
 ```typescript
-import { Validation, success, failure } from "farmify/dist/validation"
+import { Validation as V } from "farmify"
 
 // some primitive validation rules
-const positive = (n: number): Validation<string> =>
-  n > 0 ? success() : failure(["not positive"])
+const positive = (n: number): V.Validation<string> =>
+  n > 0 ? V.success() : V.failure(["not positive"])
 
-const required = <T>(t: T): Validation<string> =>
-  t ? success() : failure(["value required"])
+const required = <T>(t: T): V.Validation<string> =>
+  t ? V.success() : V.failure(["value required"])
 
 // non primitive type
 type Person = {
@@ -28,16 +28,16 @@ type Person = {
   age: number
 }
 
-import { contramap, combine } from "farmify/dist/predValidation"
+import { PredValidation as PV } from "farmify"
 
 // make a primitive validation work for a non primitive type
-const positiveAge = contramap((x: Person) => x.age, positive);
+const positiveAge = PV.contramap((x: Person) => x.age, positive);
 
 // combine 0 - many validations into a single validation where
 // all rules must pass to be valid and all failures are aggregated
-const validatePerson = combine(
+const validatePerson = PV.combine(
   positiveAge,
-  contramap((x: Person) => x.name, required)
+  PV.contramap((x: Person) => x.name, required)
 )
 
 validatePerson({
@@ -58,6 +58,8 @@ validatePerson({
 Farmify is polymorphic in its error type which means you can use whatever you want.
 
 ```typescript
+import { Validation as V } from "farmify"
+
 type FormError = {
   val: any;
   prop: string;
@@ -66,10 +68,10 @@ type FormError = {
 
 const maxLength = (maxLength: number, prop: string) => (
   n: number
-): Validation<FormError> =>
+): V.Validation<FormError> =>
   n <= maxLength
-    ? success()
-    : failure([
+    ? V.success()
+    : V.failure([
         {
           val: n,
           prop: prop,
@@ -81,10 +83,10 @@ const maxLength = (maxLength: number, prop: string) => (
 ### Working with asynchronous validation
 
 ```typescript
-import * as A from "farmify/dist/asyncValidation"
+import { Validation as V, AsyncValidation as A } from "farmify"
 
 // an asynchronous validation
-const isUnique = async (username: string): Promise<Validation<string>> => {
+const isUnique = async (username: string): Promise<V.Validation<string>> => {
   const matchedUser = await getUser(username);
   return matchedUser 
     ? failure([ "Username already taken" ]) 
@@ -92,7 +94,7 @@ const isUnique = async (username: string): Promise<Validation<string>> => {
 }
 
 // a non asynchronous validation
-const maxLength = (maxLength: number) => (s: string): Validation<string>> => 
+const maxLength = (maxLength: number) => (s: string): V.Validation<string>> => 
   s.length <= maxLength 
     ? success()
     : failure([ `Cannot be longer than ${maxLength}`  ])
